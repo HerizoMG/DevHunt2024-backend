@@ -30,7 +30,7 @@ class Post
     #[ORM\ManyToOne(inversedBy: 'post')]
     private ?User $user = null;
 
-    #[ORM\ManyToMany(targetEntity: PiecesJointes::class, mappedBy: 'post')]
+	#[ORM\ManyToMany(targetEntity: PiecesJointes::class, mappedBy: 'post', cascade: ['persist', 'remove'])]
     private Collection $piecesJointes;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'posts')]

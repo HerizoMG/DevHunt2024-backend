@@ -24,6 +24,7 @@ class PiecesJointes
     #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'piecesJointes')]
     private Collection $post;
 
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -97,4 +98,5 @@ class PiecesJointes
 
         return $this;
     }
+
 }
