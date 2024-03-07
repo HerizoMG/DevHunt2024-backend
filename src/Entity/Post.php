@@ -23,15 +23,14 @@ class Post
 
     #[ORM\Column]
     private ?bool $isEpingle = null;
-
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'liker')]
+	#[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'liker')]
     private Collection $users;
 
     #[ORM\ManyToOne(inversedBy: 'post')]
     private ?User $user = null;
 
 	#[ORM\ManyToMany(targetEntity: PiecesJointes::class, mappedBy: 'post', cascade: ['persist', 'remove'])]
-             private Collection $piecesJointes;
+    private Collection $piecesJointes;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'posts')]
     private Collection $tag;
@@ -44,6 +43,7 @@ class Post
 
     #[ORM\Column(length: 20)]
     private ?string $title = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -252,6 +252,30 @@ class Post
     public function setTitle(string $title): static
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
