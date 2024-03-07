@@ -64,21 +64,25 @@ class User
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user')]
     private Collection $comment;
 
-    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'users')]
-    private Collection $liker;
-
     #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'user')]
     private Collection $post;
 
     #[ORM\ManyToMany(targetEntity: Matiere::class, inversedBy: 'users')]
     private Collection $matiere;
 
+    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'user')]
+    private Collection $liker;
+
+    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'user')]
+    private Collection $posts;
+
     public function __construct()
     {
         $this->comment = new ArrayCollection();
-        $this->liker = new ArrayCollection();
         $this->post = new ArrayCollection();
         $this->matiere = new ArrayCollection();
+        $this->liker = new ArrayCollection();
+        $this->posts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -299,30 +303,6 @@ class User
     /**
      * @return Collection<int, Post>
      */
-    public function getLiker(): Collection
-    {
-        return $this->liker;
-    }
-
-    public function addLiker(Post $liker): static
-    {
-        if (!$this->liker->contains($liker)) {
-            $this->liker->add($liker);
-        }
-
-        return $this;
-    }
-
-    public function removeLiker(Post $liker): static
-    {
-        $this->liker->removeElement($liker);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Post>
-     */
     public function getPost(): Collection
     {
         return $this->post;
@@ -372,5 +352,43 @@ class User
         $this->matiere->removeElement($matiere);
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Like>
+     */
+    public function getLiker(): Collection
+    {
+        return $this->liker;
+    }
+
+    public function addLiker(Like $liker): static
+    {
+        if (!$this->liker->contains($liker)) {
+            $this->liker->add($liker);
+            $liker->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLiker(Like $liker): static
+    {
+        if ($this->liker->removeElement($liker)) {
+            // set the owning side to null (unless already changed)
+            if ($liker->getUser() === $this) {
+                $liker->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
     }
 }

@@ -23,14 +23,9 @@ class Post
 
     #[ORM\Column]
     private ?bool $isEpingle = null;
-	#[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'liker')]
-    private Collection $users;
-
-    #[ORM\ManyToOne(inversedBy: 'post')]
-    private ?User $user = null;
 
 	#[ORM\ManyToMany(targetEntity: PiecesJointes::class, mappedBy: 'post', cascade: ['persist', 'remove'])]
-    private Collection $piecesJointes;
+                      private Collection $piecesJointes;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'posts')]
     private Collection $tag;
@@ -43,14 +38,18 @@ class Post
 
     #[ORM\Column(length: 20)]
     private ?string $title = null;
+    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'post')]
+    private Collection $liker;
 
+    #[ORM\ManyToOne(inversedBy: 'posts')]
+    private ?User $user = null;
     public function __construct()
     {
-        $this->users = new ArrayCollection();
         $this->piecesJointes = new ArrayCollection();
         $this->tag = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->cours = new ArrayCollection();
+        $this->liker = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,45 +89,6 @@ class Post
     public function setIsEpingle(bool $isEpingle): static
     {
         $this->isEpingle = $isEpingle;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
-
-    public function addUser(User $user): static
-    {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-            $user->addLiker($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): static
-    {
-        if ($this->users->removeElement($user)) {
-            $user->removeLiker($this);
-        }
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
 
         return $this;
     }
@@ -279,4 +239,59 @@ class Post
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Like>
+     */
+    public function getLiker(): Collection
+    {
+        return $this->liker;
+    }
+
+    public function addLiker(Like $liker): static
+    {
+        if (!$this->liker->contains($liker)) {
+            $this->liker->add($liker);
+            $liker->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLiker(Like $liker): static
+    {
+        if ($this->liker->removeElement($liker)) {
+            // set the owning side to null (unless already changed)
+            if ($liker->getPost() === $this) {
+                $liker->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
 }
