@@ -50,7 +50,7 @@ class UploadExcelDataController extends AbstractController
 		} catch (FileException $e) {
 			return new JsonResponse(['error' => 'Upload failed'], Response::HTTP_INTERNAL_SERVER_ERROR);
 		}
-		$path = 'images/'.$newFilename;
+		$path = $newFilename;
 
 		$fileFolder = __DIR__ . '/../../public/students/';
 		$filePathName = md5(uniqid()) . $file->getClientOriginalName();
@@ -119,7 +119,7 @@ class UploadExcelDataController extends AbstractController
 		} catch (FileException $e) {
 			return new JsonResponse(['error' => 'Upload failed'], Response::HTTP_INTERNAL_SERVER_ERROR);
 		}
-		$path = 'images/'.$newFilename;
+		$path = $newFilename;
 
 		$fileFolder = __DIR__ . '/../../public/enseignants/';
 
@@ -187,7 +187,7 @@ class UploadExcelDataController extends AbstractController
 		} catch (FileException $e) {
 			return new JsonResponse(['error' => 'Upload failed'], Response::HTTP_INTERNAL_SERVER_ERROR);
 		}
-		$path = 'images/'.$newFilename;
+		$path = $newFilename;
 
 		$fileFolder = __DIR__ . '/../../public/entreprise/';
 
