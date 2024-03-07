@@ -26,11 +26,6 @@ class UploadExcelDataController extends AbstractController
 		$this->faker = Factory::create('fr_FR');
 	}
 
-	/**
-	 * @Route("/upload-excel", name="xlsx")
-	 * @param Request $request
-	 * @throws \Exception
-	 */
 	#[Route('/api/upload/excel/data/student', name: 'student.data.excel', methods: ['POST'])]
 	public function student(Request $request)
 	{
@@ -95,11 +90,6 @@ class UploadExcelDataController extends AbstractController
 		return $this->json('users registered', 200);
 	}
 
-	/**
-	 * @Route("/upload-excel", name="xlsx")
-	 * @param Request $request
-	 * @throws \Exception
-	 */
 	#[Route('/api/upload/excel/data/enseignant', name: 'enseignant.data.excel', methods: ['POST'])]
 	public function enseignant(Request $request)
 	{
