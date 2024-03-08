@@ -72,11 +72,11 @@ class UserController extends AbstractController
 		]);
 	}
 
-	#[Route('/api/update/info/user/{id}', name: 'update.user', methods: ['PUT'])]
-	public function updateInfoUser(Request $request, ManagerRegistry $managerRegistry, int $id)
+	#[Route('/api/updateInfo/{userId}', name: 'update.user', methods: ['PUT'])]
+	public function updateInfoUser(Request $request, ManagerRegistry $managerRegistry, int $userId)
 	{
 		$requestData = json_decode($request->getContent(), true);
-		$user = $managerRegistry->getRepository(User::class)->find($id);
+		$user = $managerRegistry->getRepository(User::class)->find($userId);
 
 		$password = $requestData['password'];
 		$path = $request->files->get('path');

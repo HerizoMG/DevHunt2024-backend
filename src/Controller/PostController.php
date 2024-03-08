@@ -27,7 +27,7 @@ class PostController extends AbstractController
 	public function show(): JsonResponse
 	{
 		$repository = $this->entityManager->getRepository(Post::class);
-		$posts = $repository->findBy([], ['id' => 'DESC']);
+		$posts = $repository->findBy([], ['createdAt' => 'DESC']);
 		$data = [];
 		foreach($posts as $post) {
 			$postData = [

@@ -45,4 +45,13 @@ class PostRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+	public function findByUserRole(string $role): array
+	{
+		return $this->createQueryBuilder('p')
+			->innerJoin('p.user', 'u')
+			->where('u.'.$role.' = true')
+			->getQuery()
+			->getResult();
+	}
 }
