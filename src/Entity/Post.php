@@ -25,7 +25,7 @@ class Post
     private ?bool $isEpingle = null;
 
 	#[ORM\ManyToMany(targetEntity: PiecesJointes::class, mappedBy: 'post', cascade: ['persist', 'remove'])]
-                      private Collection $piecesJointes;
+      	private Collection $piecesJointes;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'posts')]
     private Collection $tag;
@@ -43,6 +43,12 @@ class Post
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?User $user = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
     public function __construct()
     {
         $this->piecesJointes = new ArrayCollection();
@@ -50,6 +56,8 @@ class Post
         $this->comments = new ArrayCollection();
         $this->cours = new ArrayCollection();
         $this->liker = new ArrayCollection();
+		$this->createdAt = new \DateTimeImmutable();
+		$this->updatedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

@@ -24,15 +24,23 @@ class Comment
     #[ORM\ManyToOne(inversedBy: 'comment')]
     private ?User $user = null;
 
-    #[ORM\ManyToMany(targetEntity: PiecesJointes::class, inversedBy: 'comments')]
+    #[ORM\ManyToMany(targetEntity: PiecesJointes::class, inversedBy: 'comments', cascade: ['persist', 'remove'])]
     private Collection $piecesJointes;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     private ?Post $post = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
+
     public function __construct()
     {
         $this->piecesJointes = new ArrayCollection();
+		$this->createdAt = new \DateTimeImmutable();
+		$this->updatedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -108,6 +116,30 @@ class Comment
     public function setPost(?Post $post): static
     {
         $this->post = $post;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

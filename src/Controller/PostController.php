@@ -27,7 +27,7 @@ class PostController extends AbstractController
 	public function show(): JsonResponse
 	{
 		$repository = $this->entityManager->getRepository(Post::class);
-		$posts = $repository->findAll();
+		$posts = $repository->findBy([], ['id' => 'DESC']);
 		$data = [];
 		foreach($posts as $post) {
 			$postData = [
@@ -36,12 +36,12 @@ class PostController extends AbstractController
 				'type' => $post->getType(),
 				'description' => $post->getDescription(),
 				'isEpingle' => $post->isIsEpingle(),
+				'createdAt' => $post->getCreatedAt(),
 				'user' => [],
 				'piecesJointe' => [],
 				'like' => [],
 				'comments' =>[],
 			];
-
 			$commentData = [];
 			foreach ($post->getComments() as $comment) {
 				$commentData = [
@@ -53,7 +53,6 @@ class PostController extends AbstractController
 						'firstname' => $comment->getUser()->getFirstName(),
 					],
 				];
-
 
 				foreach ($comment->getPiecesJointes() as $piecesJointe) {
 					$pjData = [
@@ -247,6 +246,7 @@ class PostController extends AbstractController
 			'type' => $post->getType(),
 			'description' => $post->getDescription(),
 			'isEpingle' => $post->isIsEpingle(),
+			'createdAt' => $post->getCreatedAt(),
 			'user' => [],
 			'piecesJointe' => [],
 			'like' => [],

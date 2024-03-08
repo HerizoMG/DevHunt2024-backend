@@ -31,6 +31,7 @@ class DownloadFileController extends AbstractController
 
 			$response = new BinaryFileResponse($fileWithPath);
 
+			// Ajouter des en-têtes pour forcer le téléchargement et définir le nom du fichier
 			$response->setContentDisposition(
 				ResponseHeaderBag::DISPOSITION_ATTACHMENT,
 				$fileName
