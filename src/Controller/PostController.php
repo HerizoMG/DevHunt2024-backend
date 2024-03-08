@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\PiecesJointes;
 use App\Entity\Post;
 use App\Entity\User;
@@ -28,8 +29,7 @@ class PostController extends AbstractController
 		$repository = $this->entityManager->getRepository(Post::class);
 		$posts = $repository->findAll();
 		$data = [];
-		foreach($posts as $post)
-		{
+		foreach($posts as $post) {
 			$postData = [
 				'id' => $post->getId(),
 				'title' => $post->getTitle(),
@@ -39,7 +39,35 @@ class PostController extends AbstractController
 				'user' => [],
 				'piecesJointe' => [],
 				'like' => [],
+				'comments' =>[],
 			];
+
+			$commentData = [];
+			foreach ($post->getComments() as $comment) {
+				$commentData = [
+					'id' => $comment->getId(),
+					'designation' => $comment->getDesignation(),
+					'piecesJointeComment' => [],
+					'userComment' => [
+						'id' => $comment->getUser()->getId(),
+						'firstname' => $comment->getUser()->getFirstName(),
+					],
+				];
+
+
+				foreach ($comment->getPiecesJointes() as $piecesJointe) {
+					$pjData = [
+						'id' =>$piecesJointe->getId(),
+						'piecesJointe'=>$piecesJointe->getLink()
+					];
+					$commentData['piecesJointeComment'][] = $pjData;
+				}
+
+				$postData['comments'][] = $commentData;
+			}
+
+
+			$likeData = [];
 			$like = $post->getLiker();
 			foreach ($like as $liker)
 			{
@@ -47,7 +75,7 @@ class PostController extends AbstractController
 					'post_id' =>$liker->getPost()->getId(),
 					'userd_id' =>$liker->getUser()->getId(),
 				];
-				$postData['like'][] = $likeData;
+				$postData['like'] = $likeData;
 			}
 			$piecesJointe = $post->getPiecesJointes();
 			foreach ($piecesJointe as $pj)
