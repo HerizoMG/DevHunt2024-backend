@@ -75,11 +75,28 @@ class UserController extends AbstractController
 	#[Route('/api/updateInfo/{userId}', name: 'update.user', methods: ['PUT'])]
 	public function updateInfoUser(Request $request, ManagerRegistry $managerRegistry, int $userId)
 	{
-		$requestData = json_decode($request->getContent(), true);
+		$jsonData = json_decode($request->request->get('json_data'), true);
 		$user = $managerRegistry->getRepository(User::class)->find($userId);
-
-		$password = $requestData['password'];
+		$oldPassword = $jsonData['oldPassword'];
+		$newPassword = $jsonData['newPassword'];
+		$lastName = $jsonData['lastName'];
+		$firstName = $jsonData['firstName'];
 		$path = $request->files->get('path');
+
+		if ($user)
+		{
+			if ($user->getPassword() == $oldPassword)
+			{
+				$user->setPassword($newPassword);
+			}else{
+				return new JsonResponse(['message'=>'password incorrect'],Response::HTTP_UNAUTHORIZED);
+			}
+		}
+
+		if ($lastName === null || $firstName === null)
+		{
+			return new JsonResponse(Response::HTTP_BAD_REQUEST);
+		}
 
 		if (!$path) {
 			return new JsonResponse(['error' => 'No file uploaded'], Response::HTTP_BAD_REQUEST);
@@ -95,8 +112,9 @@ class UserController extends AbstractController
 		}
 		$piecesJointesPath =$newFilename;
 
-		$user->getPassword($password)
-			->getPath($piecesJointesPath);
+		$user->setFirstName($lastName);
+		$user->setLastName($firstName);
+		$user->setPath($piecesJointesPath);
 
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();

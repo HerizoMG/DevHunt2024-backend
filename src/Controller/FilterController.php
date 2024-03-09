@@ -30,7 +30,6 @@ class FilterController extends AbstractController
 				'id' => $post->getId(),
 				'title' => $post->getTitle(),
 				'description' => $post->getDescription(),
-				// Ajoutez d'autres champs si nécessaire
 			];
 		}
 

@@ -45,4 +45,46 @@ class SearchController extends AbstractController
 		}
 		return new JsonResponse($responseData, Response::HTTP_OK);
 	}
+
+
+	#[Route('/api/filter/{role}/{keyword}', name: 'filter', methods: ['GET'])]
+	public function index(Request $request, ManagerRegistry $managerRegistry, string $role, string $keyword): JsonResponse
+	{
+		$validRoles = ['isNovice', 'isEnseignant', 'isAdministration', 'isImmobilier', 'isEntreprise', 'isElder', 'isClub' , 'isMateriel', 'isAll'];
+
+		if (!in_array($role, $validRoles)) {
+			return new JsonResponse(['error' => 'Invalid role'], Response::HTTP_BAD_REQUEST);
+		}
+
+		if ($role === 'isAll') {
+			// Si le rôle est "isAll", on récupère tous les posts sans filtrer par rôle
+			$posts = $managerRegistry->getRepository(Post::class)->findByKeyword($keyword);
+		} else {
+			// Sinon, on récupère les posts en filtrant par le rôle spécifié
+			$posts = $managerRegistry->getRepository(Post::class)->findByUserRoleAndKeyword($role, $keyword);
+		}
+
+		if (empty($posts)) {
+			return new JsonResponse(['message' => 'No posts found for the role ' . $role . ' with the keyword ' . $keyword], Response::HTTP_OK);
+		}
+
+		$responseData = [];
+		foreach ($posts as $post) {
+			$postData[] = [
+				'id' => $post->getId(),
+				'title' => $post->getTitle(),
+				'description' => $post->getDescription(),
+				'user' => [
+					'id' => $post->getUser()->getId(),
+					'firstname' => $post->getUser()->getFirstName(),
+					'lastname' => $post->getUser()->getLastName(),
+					'role' => $role,
+				],
+			];
+		}
+		return new JsonResponse($postData, Response::HTTP_OK);
+	}
+
+
+
 }

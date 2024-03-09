@@ -54,4 +54,48 @@ class PostRepository extends ServiceEntityRepository
 			->getQuery()
 			->getResult();
 	}
+
+	public function findByUserRoleAndKeyword(string $role, string $keyword): array
+	{
+		return $this->createQueryBuilder('p')
+			->innerJoin('p.user', 'u')
+			->andWhere('(
+            p.title LIKE :keyword OR
+            p.description LIKE :keyword OR
+            u.firstName LIKE :keyword OR
+            u.lastName LIKE :keyword
+        )')
+			->andWhere('u.'.$role.' = true')
+			->setParameter('keyword', '%' . $keyword . '%')
+			->getQuery()
+			->getResult();
+	}
+
+	public function findByKeyword(string $keyword): array
+	{
+		return $this->createQueryBuilder('p')
+			->innerJoin('p.user', 'u')
+			->andWhere('(
+            p.title LIKE :keyword OR
+            p.description LIKE :keyword OR
+            u.firstName LIKE :keyword OR
+            u.lastName LIKE :keyword
+        )')
+			->setParameter('keyword', '%' . $keyword . '%')
+			->getQuery()
+			->getResult();
+	}
+
+//	public function findByKeyword(string $keyword): array
+//	{
+//		return $this->createQueryBuilder('p')
+//			->andWhere('(
+//            p.title LIKE :keyword OR
+//            p.description LIKE :keyword
+//        )')
+//			->setParameter('keyword', '%' . $keyword . '%')
+//			->getQuery()
+//			->getResult();
+//	}
+
 }

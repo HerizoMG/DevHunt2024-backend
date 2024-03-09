@@ -42,6 +42,7 @@ class PostController extends AbstractController
 				'like' => [],
 				'comments' =>[],
 			];
+
 			$commentData = [];
 			foreach ($post->getComments() as $comment) {
 				$commentData = [
@@ -51,8 +52,47 @@ class PostController extends AbstractController
 					'userComment' => [
 						'id' => $comment->getUser()->getId(),
 						'firstname' => $comment->getUser()->getFirstName(),
+						'lastname' => $comment->getUser()->getLastName(),
+						'username' =>$comment->getUser()->getUserName(),
+						'path' => $comment->getUser()->getPath(),
+						'raisonSocial' => $comment->getUser()->getRaisonSocial(),
+						'email' => $comment->getUser()->getEmail(),
+						'isAdmin' => $comment->getUser()->isIsAdmin(),
+						'isNovice' => $comment->getUser()->isIsNovice(),
+						'isEnseignant' => $comment->getUser()->isIsEnseignant(),
+						'isAdministration' => $comment->getUser()->isIsAdministration(),
+						'isEntreprise' => $comment->getUser()->isIsEntreprise(),
+						'isMateriel' => $comment->getUser()->isIsMateriel(),
+						'isElder' => $comment->getUser()->isIsElder(),
+						'isImmobilier' => $comment->getUser()->isIsImmobilier(),
+						'role' => []
 					],
 				];
+				if ($comment->getUser()->isIsAdmin()) {
+					$commentData['userComment']['role'][] = 'Admin';
+				}
+				if ($comment->getUser()->isIsNovice()) {
+					$commentData['userComment']['role'][] = 'Novice';
+				}
+				if ($comment->getUser()->isIsEnseignant()) {
+					$commentData['userComment']['role'][] = 'Enseignant';
+				}
+				if ($comment->getUser()->isIsAdministration()) {
+					$commentData['userComment']['role'][] = 'Administration';
+				}
+				if ($comment->getUser()->isIsElder()) {
+					$commentData['userComment']['role'][] = 'Elder';
+				}
+				if ($comment->getUser()->isIsEntreprise()) {
+					$commentData['userComment']['role'][] = 'Entreprise';
+				}
+				if ($comment->getUser()->isIsImmobilier()) {
+					$commentData['userComment']['role'][] = 'Immobilier';
+				}
+				if ($comment->getUser()->isIsMateriel()) {
+					$commentData['userComment']['role'][] = 'Materiel';
+				}
+				$postData['comments'][] = $commentData;
 
 				foreach ($comment->getPiecesJointes() as $piecesJointe) {
 					$pjData = [
